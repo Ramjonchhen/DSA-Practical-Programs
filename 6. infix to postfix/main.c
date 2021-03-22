@@ -110,7 +110,6 @@ void infixToPostfix(char *infix,int n) {
 
         else if( isOperator(infix[i]) ) {
             while( !isEmpty() && !isOpeningBracket(top()) &&hasHigherPrecedence(top(),infix[i])  ) {
-                    printf("\n Postfix: %s",postfix);
                 postfix[count++] = top();
                 pop();
             }
@@ -122,7 +121,6 @@ void infixToPostfix(char *infix,int n) {
         }
         else if( isClosingBracket(infix[i])) {
             while(!isEmpty() && !isOpeningBracket(top()) ) {
-                    printf("\n Postfix: %s",postfix);
                 postfix[count++] = top();
                 pop();
             }
