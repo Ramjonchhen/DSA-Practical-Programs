@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct node{
     char data;
@@ -9,7 +10,10 @@ struct node{
 struct node* tos = NULL;
 
 char *infix;
-char *postfix;
+char *reverse;
+char *output;
+
+
 int count = 0;
 
 int isEmpty() {
@@ -98,19 +102,19 @@ int isClosingBracket(char x) {
 }
 
 void infixToPostfix(char *infix,int n) {
-    int i;
+    int i; count = 0;
     for(i=0; i<n; i++) {
         if(infix[i]==' '  || infix[i]==',') {
             continue;
         }
 
         else if( isOperand(infix[i]) ) {
-            postfix[count++] = infix[i];
+            output[count++] = infix[i];
         }
 
         else if( isOperator(infix[i]) ) {
             while( !isEmpty() && !isOpeningBracket(top()) &&hasHigherPrecedence(top(),infix[i])  ) {
-                postfix[count++] = top();
+                output[count++] = top();
                 pop();
             }
             push(infix[i]);
@@ -121,36 +125,87 @@ void infixToPostfix(char *infix,int n) {
         }
         else if( isClosingBracket(infix[i])) {
             while(!isEmpty() && !isOpeningBracket(top()) ) {
-                postfix[count++] = top();
+                output[count++] = top();
                 pop();
             }
             pop();
         }
     }
     while(!isEmpty() ) {
-        postfix[count++] = top();
+        output[count++] = top();
         pop();
     }
 }
 
 int main()
 {
-    int n;
-    printf("Enter the length of the infix string: ");
+    while(1) {
+
+    int choice,n,i;
+    printf("\n Enter 1 for converting infix to postfix: ");
+    printf("\n Enter 2 for converting infix to prefix: ");
+    printf("\n Enter 3 for exit.");
+    printf("\n Enter your choice: ");
+    scanf("%d",&choice);
+
+    switch(choice) {
+    case 1:
+
+    printf("\nEnter the length of the infix string: ");
     scanf("%d",&n);
 
     infix = (char*)malloc(sizeof(char)*n+1);
-    postfix = (char*)malloc(sizeof(char)*n+1);
+    output = (char*)malloc(sizeof(char)*n+1);
+    reverse = (char*)malloc(sizeof(char)*n+1);
 
     printf("\n enter the infix string: ");
     scanf("%s",infix);
 
+
     infixToPostfix(infix,n);
 
-    int i;
     printf("\n The equivalent postfix form is: ");
     for(i=0; i<count; i++) {
-        printf("%c",postfix[i]);
+        printf("%c",output[i]);
+    }
+    printf("\n");
+    break;
+
+    case 2:
+    printf("\nEnter the length of the infix string: ");
+    scanf("%d",&n);
+
+    infix = (char*)malloc(sizeof(char)*n+1);
+    output = (char*)malloc(sizeof(char)*n+1);
+    reverse = (char*)malloc(sizeof(char)*n+1);
+
+    printf("\n enter the infix string: ");
+    scanf("%s",infix);
+    strcpy(reverse,infix);
+    strrev(reverse);
+
+    for(int i=0; reverse[i]!='\0'; i++) {
+        if(reverse[i]==')') {
+            reverse[i] = '(';
+        }else if(reverse[i]=='(' ) {
+            reverse[i] = ')';
+        }
+    }
+
+
+    infixToPostfix(reverse,n);
+
+    printf("\n The equivalent prefix form is: ");
+    for(i=count-1; i>=0; i--) {
+        printf("%c",output[i]);
+    }
+    printf("\n");
+    break;
+
+    case 3:
+        return 0;
+    }
+
     }
     return 0;
 }
